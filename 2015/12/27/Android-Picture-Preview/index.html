@@ -9,16 +9,16 @@
   <meta name="keywords" content="android">
   
 
-  <meta name="description" content="#概述Android中的图片加载到内存中后会生成一个Bitmap的对象，这个对象会占用很大的内存空间，对于比较大的图片来说以往都会使用BitmapFactory的一个内部类Options对图片做一下加载前的配置，比如inSampleSize属性，当inSampleSize=2时，图片的宽高都会加载成原来的二分之一，所以加载到内存中所占用的大小便是原来的四分之一，所带来的缺点是图片变得模糊了。所以对">
+  <meta name="description" content="Android中的图片加载到内存中后会生成一个Bitmap的对象，这个对象会占用很大的内存空间，对于比较大的图片来说以往都会使用BitmapFactory的一个内部类Options对图片做一下加载前的配置，比如inSampleSize属性，当inSampleSize=2时，图片的宽高都会加载成原来的二分之一，所以加载到内存中所占用的大小便是原来的四分之一，所带来的缺点是图片变得模糊了。所以对于加载">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android Picture Preview">
 <meta property="og:url" content="http://yoursite.com/2015/12/27/Android-Picture-Preview/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="#概述Android中的图片加载到内存中后会生成一个Bitmap的对象，这个对象会占用很大的内存空间，对于比较大的图片来说以往都会使用BitmapFactory的一个内部类Options对图片做一下加载前的配置，比如inSampleSize属性，当inSampleSize=2时，图片的宽高都会加载成原来的二分之一，所以加载到内存中所占用的大小便是原来的四分之一，所带来的缺点是图片变得模糊了。所以对">
-<meta property="og:updated_time" content="2015-12-27T14:25:42.000Z">
+<meta property="og:description" content="Android中的图片加载到内存中后会生成一个Bitmap的对象，这个对象会占用很大的内存空间，对于比较大的图片来说以往都会使用BitmapFactory的一个内部类Options对图片做一下加载前的配置，比如inSampleSize属性，当inSampleSize=2时，图片的宽高都会加载成原来的二分之一，所以加载到内存中所占用的大小便是原来的四分之一，所带来的缺点是图片变得模糊了。所以对于加载">
+<meta property="og:updated_time" content="2015-12-27T14:44:28.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android Picture Preview">
-<meta name="twitter:description" content="#概述Android中的图片加载到内存中后会生成一个Bitmap的对象，这个对象会占用很大的内存空间，对于比较大的图片来说以往都会使用BitmapFactory的一个内部类Options对图片做一下加载前的配置，比如inSampleSize属性，当inSampleSize=2时，图片的宽高都会加载成原来的二分之一，所以加载到内存中所占用的大小便是原来的四分之一，所带来的缺点是图片变得模糊了。所以对">
+<meta name="twitter:description" content="Android中的图片加载到内存中后会生成一个Bitmap的对象，这个对象会占用很大的内存空间，对于比较大的图片来说以往都会使用BitmapFactory的一个内部类Options对图片做一下加载前的配置，比如inSampleSize属性，当inSampleSize=2时，图片的宽高都会加载成原来的二分之一，所以加载到内存中所占用的大小便是原来的四分之一，所带来的缺点是图片变得模糊了。所以对于加载">
   
   
 
@@ -98,12 +98,21 @@
 </a>
       </p>
       <div class="article-entry" itemprop="articleBody">
-        <p>#概述<br>Android中的图片加载到内存中后会生成一个Bitmap的对象，这个对象会占用很大的内存空间，对于比较大的图片来说以往都会使用BitmapFactory的一个内部类Options对图片做一下加载前的配置，比如inSampleSize属性，当inSampleSize=2时，图片的宽高都会加载成原来的二分之一，所以加载到内存中所占用的大小便是原来的四分之一，所带来的缺点是图片变得模糊了。所以对于加载过大的图片（如10M+的图片），一般都是采用分块加载的方式。</p>
-<p>#关键类<br>在Android中图片的加载中提供了一个类可以方便地实现图片的分块加载，<code>BitmapRegionDecoder</code>，通过这个类我们可以方便地加载原始图片的模块区域指定精度的bitmap对象，也就是当你一大图在手机上只显示左上角的一小块时，我们可以通过计算一个合适的精度和区域，将其对应的图片块加载到内存并显示到屏幕上。</p>
+        <p>Android中的图片加载到内存中后会生成一个Bitmap的对象，这个对象会占用很大的内存空间，对于比较大的图片来说以往都会使用BitmapFactory的一个内部类Options对图片做一下加载前的配置，比如inSampleSize属性，当inSampleSize=2时，图片的宽高都会加载成原来的二分之一，所以加载到内存中所占用的大小便是原来的四分之一，所带来的缺点是图片变得模糊了。所以对于加载过大的图片（如10M+的图片），一般都是采用分块加载的方式。</p>
+<p>##关键类<br>在Android中图片的加载中提供了一个类可以方便地实现图片的分块加载，<code>BitmapRegionDecoder</code>，通过这个类我们可以方便地加载原始图片的模块区域指定精度的bitmap对象，也就是当你一大图在手机上只显示左上角的一小块时，我们可以通过计算一个合适的精度和区域，将其对应的图片块加载到内存并显示到屏幕上。</p>
+<p>首先我们分析下图片加载及显示的流程，我们把耗时的加载过程放到子线程中去完成，UI线程中处理图片的刷新，手势的监听处理等。<br>一个大图片的预览过程：</p>
+<ol>
+<li>图片的加载</li>
+<li>图片的显示</li>
+<li>手势放大</li>
+<li>移动显示</li>
+<li>滚动</li>
+</ol>
+<p>1.图片的加载，第一次加载一般都会显示整张图片，目前定义了两种显示方式FIT_CENTER, FIT_AUTO。这两种一开始都会显示出整张图片，所以开始时我们将图片的整个加载到内存中，当然会更加图片的原始尺寸计算一个合适的SampleSize（一个关于清晰地的值，[1, 2, 4, 8, …)2的幂的数字，越大越模糊，占用的内存越少）。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">mImage.mImageRegion = mImage.mImageDecoder.newRegionDecoder();</span><br><span class="line">mImage.mImageWidth = mImage.mImageRegion.getWidth();</span><br><span class="line">mImage.mImageHeight = mImage.mImageRegion.getHeight();</span><br><span class="line">mImage.mImageOriginalRect = <span class="keyword">new</span> Rect(<span class="number">0</span>, <span class="number">0</span>, mImage.mImageWidth, mImage.mImageHeight);</span><br><span class="line">mInfo.mImageRect = <span class="keyword">new</span> Rect(<span class="number">0</span>, <span class="number">0</span>, mImage.mImageWidth, mImage.mImageHeight);</span><br><span class="line">            center(mInfo.mImageRect, mInfo.mVisibleRect);</span><br><span class="line">mInfo.mScale.setScale(<span class="number">1f</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> sampleSize = <span class="number">1</span>;</span><br><span class="line"><span class="comment">// 获取一个合适的inSampleSize</span></span><br><span class="line"><span class="keyword">if</span> (mInfo.mVisibleRect.isEmpty()) &#123;</span><br><span class="line">		sampleSize = getSampleSize(<span class="number">1f</span> * mImage.mImageWidth / mDisplayMetrics.widthPixels</span><br><span class="line">                        * mImage.mImageHeight / mDisplayMetrics.heightPixels);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		sampleSize = getSampleSize(</span><br><span class="line">                        Math.max(<span class="number">1f</span> * mImage.mImageWidth / mInfo.mVisibleRect.width(),</span><br><span class="line">                                <span class="number">1f</span> * mImage.mImageHeight / mInfo.mVisibleRect.height()));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">mImage.mImageCacheScale = sampleSize;</span><br><span class="line">Options options = <span class="keyword">new</span> Options();</span><br><span class="line">options.inSampleSize = sampleSize;</span><br><span class="line">mImage.mImageCache = mImage.mImageRegion.decodeRegion(mImage.mImageOriginalRect, options);</span><br></pre></td></tr></table></figure></p>
 
       </div>
       <footer class="article-footer">
-        <a data-url="http://yoursite.com/2015/12/27/Android-Picture-Preview/" data-id="ciiomp3zb0000nktcfj2eorpj" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+        <a data-url="http://yoursite.com/2015/12/27/Android-Picture-Preview/" data-id="ciionejl00000oqtc4oybl3i7" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
         
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li></ul>
