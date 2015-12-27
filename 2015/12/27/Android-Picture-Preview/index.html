@@ -15,7 +15,7 @@
 <meta property="og:url" content="http://yoursite.com/2015/12/27/Android-Picture-Preview/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="Android中的图片加载到内存中后会生成一个Bitmap的对象，这个对象会占用很大的内存空间，对于比较大的图片来说以往都会使用BitmapFactory的一个内部类Options对图片做一下加载前的配置，比如inSampleSize属性，当inSampleSize=2时，图片的宽高都会加载成原来的二分之一，所以加载到内存中所占用的大小便是原来的四分之一，所带来的缺点是图片变得模糊了。所以对于加载">
-<meta property="og:updated_time" content="2015-12-27T15:59:58.000Z">
+<meta property="og:updated_time" content="2015-12-27T16:07:30.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android Picture Preview">
 <meta name="twitter:description" content="Android中的图片加载到内存中后会生成一个Bitmap的对象，这个对象会占用很大的内存空间，对于比较大的图片来说以往都会使用BitmapFactory的一个内部类Options对图片做一下加载前的配置，比如inSampleSize属性，当inSampleSize=2时，图片的宽高都会加载成原来的二分之一，所以加载到内存中所占用的大小便是原来的四分之一，所带来的缺点是图片变得模糊了。所以对于加载">
@@ -119,10 +119,11 @@
 <h2 id="u5206_u5757_u52A0_u8F7D"><a href="#u5206_u5757_u52A0_u8F7D" class="headerlink" title="分块加载"></a>分块加载</h2><p>什么时候需要分块加载？当我们将一张很大的图片（10000*10000）显示到手机屏幕上时，开始将其全部显示，这时肯定是缩小的，比如scale = 0.1，这时的SampleSize可能是8，那么当我们再次缩小这个图片时，内存中已经有了一张完整的图片的Bitmap缓存，清晰度是8，我现在需要一个清晰度是16的完成图片，这时需要重新加载SampleSize=16的图片吗？当然不需要，我只需要直接将之前的缓存缩小即可，所以，当我们需要的清晰度低于缓存的，就不需要重新加载，当我们将图片放大后，显示某一块时，这时比如SampleSize=4，我们仅仅需要算出显示的这块区域，并将这块区域以清晰度为4加载到内存中即可，然后显示到屏幕上。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = blocks.top; i &lt;= blocks.bottom; i++) &#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> j = blocks.left; j &lt;= blocks.right; j++) &#123;</span><br><span class="line">      Point position = <span class="keyword">new</span> Point(j, i);</span><br><span class="line">      <span class="keyword">if</span> (!imageCache.mCaches.containsKey(position)) &#123;</span><br><span class="line">          mHandler.obtainMessage(MSG_IMAGE_BLOCK_LOAD,</span><br><span class="line">                  <span class="keyword">new</span> BlockInfo(position, sampleSize)).sendToTarget();</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          Bitmap bitmap = imageCache.mCaches.get(position);</span><br><span class="line">          drawables.add(<span class="keyword">new</span> ImageDrawable(bitmap, bitmapRect(bitmap),</span><br><span class="line">                  blockRect(j, i, imageBlockSize, imageRect.left, imageRect.top)));</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>上面的过程是遍历显示区域的block，并检查是否已经缓存到内存，如果没有就取加载。</p>
+<h2 id="u603B_u7ED3"><a href="#u603B_u7ED3" class="headerlink" title="总结"></a>总结</h2><p>大致的过程就是这样，但是中间有很多的细节没有具体展开去详细说明，以后慢慢再说。<br>现在这个库还存在很多已知的问题有待优化，如刷新界面时不该做太多耗时的工作，缓存的不是很好，手势没有做一些优化，双击缩放没有动画效果，超长图片缩放过程抖动，这个是因为block分块以原点为中心而不是以焦点为中心的原因，边界没有处理，只是简单的try了（这个怪我），有待慢慢优化吧！<br>项目的地址:<a href="https://github.com/kareluo/AndroidPicturePreview" target="_blank" rel="external">https://github.com/kareluo/AndroidPicturePreview</a></p>
 
       </div>
       <footer class="article-footer">
-        <a data-url="http://yoursite.com/2015/12/27/Android-Picture-Preview/" data-id="ciioq2le40000t5tc3kbcyh8w" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+        <a data-url="http://yoursite.com/2015/12/27/Android-Picture-Preview/" data-id="ciioqc0ry0000tltc0srp4m5a" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
         
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li></ul>
@@ -145,17 +146,6 @@
   </div>
   
     
-<nav id="article-nav">
-  
-  
-    <a href="/2015/12/10/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">上一篇</strong>
-      <p class="article-nav-title">Hello World</p>
-      <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
-    </a>
-  
-</nav>
-
   
   <div class="widgets-container">
     
