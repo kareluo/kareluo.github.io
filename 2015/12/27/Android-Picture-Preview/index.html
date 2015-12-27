@@ -6,19 +6,19 @@
   <title>Android Picture Preview | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
-  <meta name="keywords" content="">
+  <meta name="keywords" content="android">
   
 
-  <meta name="description">
+  <meta name="description" content="#概述Android中的图片加载到内存中后会生成一个Bitmap的对象，这个对象会占用很大的内存空间，对于比较大的图片来说以往都会使用BitmapFactory的一个内部类Options对图片做一下加载前的配置，比如inSampleSize属性，当inSampleSize=2时，图片的宽高都会加载成原来的二分之一，所以加载到内存中所占用的大小便是原来的四分之一，所带来的缺点是图片变得模糊了。所以对">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android Picture Preview">
 <meta property="og:url" content="http://yoursite.com/2015/12/27/Android-Picture-Preview/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description">
-<meta property="og:updated_time" content="2015-12-27T14:08:48.000Z">
+<meta property="og:description" content="#概述Android中的图片加载到内存中后会生成一个Bitmap的对象，这个对象会占用很大的内存空间，对于比较大的图片来说以往都会使用BitmapFactory的一个内部类Options对图片做一下加载前的配置，比如inSampleSize属性，当inSampleSize=2时，图片的宽高都会加载成原来的二分之一，所以加载到内存中所占用的大小便是原来的四分之一，所带来的缺点是图片变得模糊了。所以对">
+<meta property="og:updated_time" content="2015-12-27T14:25:42.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android Picture Preview">
-<meta name="twitter:description">
+<meta name="twitter:description" content="#概述Android中的图片加载到内存中后会生成一个Bitmap的对象，这个对象会占用很大的内存空间，对于比较大的图片来说以往都会使用BitmapFactory的一个内部类Options对图片做一下加载前的配置，比如inSampleSize属性，当inSampleSize=2时，图片的宽高都会加载成原来的二分之一，所以加载到内存中所占用的大小便是原来的四分之一，所带来的缺点是图片变得模糊了。所以对">
   
   
 
@@ -98,12 +98,16 @@
 </a>
       </p>
       <div class="article-entry" itemprop="articleBody">
-        
+        <p>#概述<br>Android中的图片加载到内存中后会生成一个Bitmap的对象，这个对象会占用很大的内存空间，对于比较大的图片来说以往都会使用BitmapFactory的一个内部类Options对图片做一下加载前的配置，比如inSampleSize属性，当inSampleSize=2时，图片的宽高都会加载成原来的二分之一，所以加载到内存中所占用的大小便是原来的四分之一，所带来的缺点是图片变得模糊了。所以对于加载过大的图片（如10M+的图片），一般都是采用分块加载的方式。</p>
+<p>#关键类<br>在Android中图片的加载中提供了一个类可以方便地实现图片的分块加载，<code>BitmapRegionDecoder</code>，通过这个类我们可以方便地加载原始图片的模块区域指定精度的bitmap对象，也就是当你一大图在手机上只显示左上角的一小块时，我们可以通过计算一个合适的精度和区域，将其对应的图片块加载到内存并显示到屏幕上。</p>
+
       </div>
       <footer class="article-footer">
-        <a data-url="http://yoursite.com/2015/12/27/Android-Picture-Preview/" data-id="ciiom3r8a0000mptcnn5e13by" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+        <a data-url="http://yoursite.com/2015/12/27/Android-Picture-Preview/" data-id="ciiomp3zb0000nktcfj2eorpj" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
         
         
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li></ul>
+
       </footer>
     </div>
   </article>
