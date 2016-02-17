@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>JNI | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="">
+  
+
+  <meta name="description" content="JNI概述JNI（Java Native Interface），是Java与Native之间的桥梁。Native一般是C/C++语言编写的程序，通过JNI桥梁可以在Java中调用Native的函数，也可以在Native中使用Java的类等。本篇文章主要介绍一下JNI的相关知识：
+
+JNI的函数的注册方式
+Java与JNI的数据类型的相互转换
+JNIEnv和jstring的使用，及JNI中的类型签名">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JNI">
+<meta property="og:url" content="http://yoursite.com/2016/02/17/JNI/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="JNI概述JNI（Java Native Interface），是Java与Native之间的桥梁。Native一般是C/C++语言编写的程序，通过JNI桥梁可以在Java中调用Native的函数，也可以在Native中使用Java的类等。本篇文章主要介绍一下JNI的相关知识：
+
+JNI的函数的注册方式
+Java与JNI的数据类型的相互转换
+JNIEnv和jstring的使用，及JNI中的类型签名">
+<meta property="og:updated_time" content="2016-02-17T15:12:34.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JNI">
+<meta name="twitter:description" content="JNI概述JNI（Java Native Interface），是Java与Native之间的桥梁。Native一般是C/C++语言编写的程序，通过JNI桥梁可以在Java中调用Native的函数，也可以在Native中使用Java的类等。本篇文章主要介绍一下JNI的相关知识：
+
+JNI的函数的注册方式
+Java与JNI的数据类型的相互转换
+JNIEnv和jstring的使用，及JNI中的类型签名">
+  
+  
+
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  
+  
+  
+
+
+  
+
+  
+    <link href='//fonts.useso.com/css?family=Titillium+Web:300,400,600' rel='stylesheet' type='text/css'>
+    <link href="//fonts.useso.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css" type="text/css">
+</head>
+
+<body>
+  <div id="wrap">
+    <header id="header">
+  <div id="header-outer" class="outer">
+    <div class="container">
+      <div class="container-inner">
+        <div id="header-title">
+          <h1 class="logo-wrap">
+            <a href="/" class="logo"></a>
+          </h1>
+          
+        </div>
+        <div id="header-inner" class="nav-container">
+          <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+          <div class="nav-container-inner">
+            <ul id="main-nav">
+              
+            </ul>
+            <nav id="sub-nav">
+              <div id="search-form-wrap">
+                
+                  <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="搜索"><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+                
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="container">
+      <div class="main-body container-inner">
+        <div class="main-body-inner">
+          <section id="main">
+            <div class="main-body-header">
+
+              <h1 class="header">未分类</h1>
+            </div>
+            <div class="main-body-content">
+              
+  <article id="post-JNI" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+      <!--  -->
+      
+        <header class="article-header">
+          
+  
+    <h1 class="article-title" itemprop="name">
+      JNI
+    </h1>
+  
+
+        </header>
+      
+      <p class="article-byline">
+        <a href="/2016/02/17/JNI/" class="article-date">
+  <time datetime="2016-02-17T13:21:50.000Z" itemprop="datePublished">2016-02-17</time>
+</a>
+      </p>
+      <div class="article-entry" itemprop="articleBody">
+        <h2 id="JNI_u6982_u8FF0"><a href="#JNI_u6982_u8FF0" class="headerlink" title="JNI概述"></a>JNI概述</h2><p>JNI（Java Native Interface），是Java与Native之间的桥梁。Native一般是C/C++语言编写的程序，通过JNI桥梁可以在Java中调用Native的函数，也可以在Native中使用Java的类等。本篇文章主要介绍一下JNI的相关知识：</p>
+<ul>
+<li>JNI的函数的注册方式</li>
+<li>Java与JNI的数据类型的相互转换</li>
+<li>JNIEnv和jstring的使用，及JNI中的类型签名</li>
+<li>Java的垃圾回收与JNI的相关内容</li>
+<li>JNI的异常处理 <h2 id="JNI_u7684_u51FD_u6570"><a href="#JNI_u7684_u51FD_u6570" class="headerlink" title="JNI的函数"></a>JNI的函数</h2>先来一个最简单的JNI程序把，打印JNI函数返回的字符串，步骤如下：</li>
+</ul>
+<ol>
+<li>在src/main下面新建一个名称为jni的目录</li>
+<li>然后在jni目录中新建两个文件：Application.mk和Android.mk，之后再做介绍。</li>
+<li>建立Java类，用于调用JNI函数</li>
+<li>使用javah命令生成.h头文件</li>
+<li>创建.c或者.cpp文件，实现JNI函数</li>
+<li>编写Android.mk文件，并编译运行程序<h3 id="u6CE8_u610F"><a href="#u6CE8_u610F" class="headerlink" title="注意"></a>注意</h3></li>
+</ol>
+<ul>
+<li>ndk需要先装好，并在local.properties中指定路径</li>
+<li>如果ndk版本不匹配要在gradle.properties中加入android.useDeprecatedNdk=true</li>
+<li><p>在app的build.gradle中的”defaultConfig”加入</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ndk &#123;</span><br><span class="line">  moduleName <span class="string">"hello"</span> <span class="comment">// module名称和Android.mk中的一致</span></span><br><span class="line">  <span class="comment">// 支持的平台，不写会使用Application.mk中指定的</span></span><br><span class="line">  abiFilters <span class="string">"armeabi"</span>, <span class="string">"armeabi-v7a"</span>, <span class="string">"x86"</span> </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>javah生成头文件，在java目录下执行一下指令：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">javah -jni me.kareluo.jni.Hello</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="Hello_u7C7B"><a href="#Hello_u7C7B" class="headerlink" title="Hello类"></a>Hello类</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> me.kareluo.jni;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Hello</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * 声明native方法</span><br><span class="line">     * <span class="doctag">@return</span> native返回的字符串</span><br><span class="line">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">native</span> String <span class="title">get</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * 加载hello库，库名为libhello.so，这里加载时只写hello即可</span><br><span class="line">     */</span></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        System.loadLibrary(<span class="string">"hello"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="javah_u751F_u6210_u7684_u5934_u6587_u4EF6"><a href="#javah_u751F_u6210_u7684_u5934_u6587_u4EF6" class="headerlink" title="javah生成的头文件"></a>javah生成的头文件</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* DO NOT EDIT THIS FILE - it is machine generated */</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;jni.h&gt;</span></span></span><br><span class="line"><span class="comment">/* Header for class me_kareluo_jni_Hello */</span></span><br><span class="line"></span><br><span class="line"><span class="preprocessor">#<span class="keyword">ifndef</span> _Included_me_kareluo_jni_Hello</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> _Included_me_kareluo_jni_Hello</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">ifdef</span> __cplusplus</span></span><br><span class="line"><span class="keyword">extern</span> <span class="string">"C"</span> &#123;</span><br><span class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></span><br><span class="line"><span class="comment">/*</span><br><span class="line"> * Class:     me_kareluo_jni_Hello</span><br><span class="line"> * Method:    get</span><br><span class="line"> * Signature: ()Ljava/lang/String;</span><br><span class="line"> */</span></span><br><span class="line"><span class="function">JNIEXPORT jstring JNICALL <span class="title">Java_me_kareluo_jni_Hello_get</span></span><br><span class="line">  <span class="params">(JNIEnv *, jobject)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="preprocessor">#<span class="keyword">ifdef</span> __cplusplus</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+<h3 id="u5EFA_u7ACBcpp_u6587_u4EF6"><a href="#u5EFA_u7ACBcpp_u6587_u4EF6" class="headerlink" title="建立cpp文件"></a>建立cpp文件</h3><p>这里函数名称是头文件中生成的，拷贝过来即可，这里的函数名称比较长，仔细看便可以看出其规则，首先以<code>Java_</code>开头，然后是类的全名，这里把<code>.</code>全部换成了<code>_</code>，最后在加上方法名称，如果方法中带有<code>_</code>则会变成<code>_1</code>。参数会多出两个JNIEnv *和jobject，这两个分别表示env环境</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;jni.h&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">"me_kareluo_jni_Hello.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="function">JNIEXPORT jstring JNICALL <span class="title">Java_me_kareluo_jni_Hello_get</span><span class="params">(JNIEnv *env, jobject jthis)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> env-&gt;NewStringUTF(<span class="string">"hello jni"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      </div>
+      <footer class="article-footer">
+        <a data-url="http://yoursite.com/2016/02/17/JNI/" data-id="cikqzamal0005vztc8i8jfabr" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+        
+        
+      </footer>
+    </div>
+  </article>
+  
+  
+
+            </div>
+          </section>
+          <aside id="sidebar">
+  <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+  <div class="sidebar-top">
+    <p>关注我 :</p>
+    <ul class="social-links">
+      
+    </ul>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/01/30/RxJava/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <p class="article-nav-title">RxJava</p>
+      <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+    </a>
+  
+</nav>
+
+  
+  <div class="widgets-container">
+    
+  </div>
+</aside>
+        </div>
+      </div>
+    </div>
+    <footer id="footer">
+  
+  <div class="container">
+    <div class="container-inner">
+      <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a>
+      <div class="credit">
+        <h1 class="logo-wrap">
+          <a href="/" class="logo"></a>
+        </h1>
+        <p>&copy; 2016 John Doe</p>
+        <p>Powered by <a href="//hexo.io/" target="_blank">Hexo</a>. Theme by <a href="//github.com/ppoffice" target="_blank">PPOffice</a></p>
+      </div>
+    </div>
+  </div>
+</footer>
+    
+
+
+  <script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+
+
+
+
+
+
+
+
+<script src="/js/html-patch.js" type="text/javascript"></script>
+<script src="/js/script.js" type="text/javascript"></script>
+
+  </div>
+</body>
+</html>
