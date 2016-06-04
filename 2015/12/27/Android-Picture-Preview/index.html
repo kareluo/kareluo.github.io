@@ -13,7 +13,7 @@
 ####图片分块加载  图片的分块加载在地图绘制的情况上最为明显，当想获取一张尺寸很大的图片的某一小块区域时，就">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android 原图预览">
-<meta property="og:url" content="http://yoursite.com/2015/06/04/Android-Picture-Preview/index.html">
+<meta property="og:url" content="http://yoursite.com/2015/12/27/Android-Picture-Preview/index.html">
 <meta property="og:site_name" content="kareluo">
 <meta property="og:description" content="简介这个项目是一个用于Android预览大图片的图片显示库，可实现原始图片高清显示，专门针对大图片做了很多优化，可以顺畅显示，缩放10多兆的高清图片。效果如下：
 
@@ -21,9 +21,9 @@
 
 相关技术概述
 ####图片分块加载  图片的分块加载在地图绘制的情况上最为明显，当想获取一张尺寸很大的图片的某一小块区域时，就">
-<meta property="og:image" content="http://yoursite.com/Android-Picture-Preview/xingren.gif">
-<meta property="og:image" content="http://yoursite.com/Android-Picture-Preview/intensify-image-preview.png">
-<meta property="og:updated_time" content="2016-06-04T15:58:36.000Z">
+<meta property="og:image" content="http://yoursite.com/xingren.gif">
+<meta property="og:image" content="http://yoursite.com/intensify-image-preview.png">
+<meta property="og:updated_time" content="2016-06-04T16:08:15.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android 原图预览">
 <meta name="twitter:description" content="简介这个项目是一个用于Android预览大图片的图片显示库，可实现原始图片高清显示，专门针对大图片做了很多优化，可以顺畅显示，缩放10多兆的高清图片。效果如下：
@@ -199,8 +199,8 @@
       <div class="body-wrap"><article id="post-Android-Picture-Preview" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2015/06/04/Android-Picture-Preview/" class="article-date">
-  	<time datetime="2015-06-04T15:46:48.000Z" itemprop="datePublished">2015-06-04</time>
+      <a href="/2015/12/27/Android-Picture-Preview/" class="article-date">
+  	<time datetime="2015-12-27T14:08:48.000Z" itemprop="datePublished">2015-12-27</time>
 </a>
     </div>
   
@@ -233,7 +233,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="u7B80_u4ECB"><a href="#u7B80_u4ECB" class="headerlink" title="简介"></a>简介</h2><p>这个项目是一个用于Android预览大图片的图片显示库，可实现原始图片高清显示，专门针对大图片做了很多优化，可以顺畅显示，缩放10多兆的高清图片。效果如下：<br><img src="Android-Picture-Preview/xingren.gif" alt="原图显示演示"></p>
+        <h2 id="u7B80_u4ECB"><a href="#u7B80_u4ECB" class="headerlink" title="简介"></a>简介</h2><p>这个项目是一个用于Android预览大图片的图片显示库，可实现原始图片高清显示，专门针对大图片做了很多优化，可以顺畅显示，缩放10多兆的高清图片。效果如下：<br><img src="xingren.gif" alt="原图显示演示"></p>
 <blockquote>
 <p>项目地址：<a href="https://github.com/kareluo/AndroidPicturePreview" target="_blank" rel="external">https://github.com/kareluo/AndroidPicturePreview</a></p>
 </blockquote>
@@ -254,7 +254,7 @@
   <figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="at_rule">@<span class="keyword">Override</span></span><br><span class="line">public boolean <span class="function">onScale</span>(ScaleGestureDetector detector) </span>&#123;</span><br><span class="line">    <span class="tag">mIntensifyView</span><span class="class">.addScale</span>(<span class="tag">detector</span><span class="class">.getScaleFactor</span>(),</span><br><span class="line">            <span class="tag">detector</span><span class="class">.getFocusX</span>(), <span class="tag">detector</span><span class="class">.getFocusY</span>());</span><br><span class="line">    <span class="tag">return</span> <span class="tag">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<h2 id="u52A0_u8F7D_u6D41_u7A0B"><a href="#u52A0_u8F7D_u6D41_u7A0B" class="headerlink" title="加载流程"></a>加载流程</h2><p><img src="Android-Picture-Preview/intensify-image-preview.png" alt="图片状态流程图"></p>
+<h2 id="u52A0_u8F7D_u6D41_u7A0B"><a href="#u52A0_u8F7D_u6D41_u7A0B" class="headerlink" title="加载流程"></a>加载流程</h2><p><img src="intensify-image-preview.png" alt="图片状态流程图"></p>
 <ul>
 <li><p>#####NONE（无状态）<br>  初始的状态，这个时候的View还没有设置图片资源，NONE状态不会<strong>自动</strong>转变到其他状态，只有外界设置了图片资源后才会进行下面的状态的转移。</p>
 </li>
@@ -286,11 +286,11 @@
     
 <nav id="article-nav">
   
-    <a href="/2016/01/30/RxJava/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2015/12/27/Android-Picture-Preview副本/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption"><</strong>
       <div class="article-nav-title">
         
-          RxJava
+          Android 原图预览
         
       </div>
     </a>
@@ -321,7 +321,7 @@
 
 <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="Android-Picture-Preview" data-title="Android 原图预览" data-url="http://yoursite.com/2015/06/04/Android-Picture-Preview/"></div>
+	<div class="ds-thread" data-thread-key="Android-Picture-Preview" data-title="Android 原图预览" data-url="http://yoursite.com/2015/12/27/Android-Picture-Preview/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">

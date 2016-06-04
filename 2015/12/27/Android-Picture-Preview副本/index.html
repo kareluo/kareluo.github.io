@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Android 原图预览 | kareluo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Android中的图片加载到内存中后会生成一个Bitmap的对象，这个对象会占用很大的内存空间，对于比较大的图片来说以往都会使用BitmapFactory的一个内部类Options对图片做一下加载前的配置，比如inSampleSize属性，当inSampleSize=2时，图片的宽高都会加载成原来的二分之一，所以加载到内存中所占用的大小便是原来的四分之一，所带来的缺点是图片变得模糊了。所以对于加载">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 原图预览">
+<meta property="og:url" content="http://yoursite.com/2015/12/27/Android-Picture-Preview副本/index.html">
+<meta property="og:site_name" content="kareluo">
+<meta property="og:description" content="Android中的图片加载到内存中后会生成一个Bitmap的对象，这个对象会占用很大的内存空间，对于比较大的图片来说以往都会使用BitmapFactory的一个内部类Options对图片做一下加载前的配置，比如inSampleSize属性，当inSampleSize=2时，图片的宽高都会加载成原来的二分之一，所以加载到内存中所占用的大小便是原来的四分之一，所带来的缺点是图片变得模糊了。所以对于加载">
+<meta property="og:updated_time" content="2016-03-28T13:05:19.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 原图预览">
+<meta name="twitter:description" content="Android中的图片加载到内存中后会生成一个Bitmap的对象，这个对象会占用很大的内存空间，对于比较大的图片来说以往都会使用BitmapFactory的一个内部类Options对图片做一下加载前的配置，比如inSampleSize属性，当inSampleSize=2时，图片的宽高都会加载成原来的二分之一，所以加载到内存中所占用的大小便是原来的四分之一，所带来的缺点是图片变得模糊了。所以对于加载">
+  
+    <link rel="alternative" href="/atom.xml" title="kareluo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="null" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">Felix</a></h1>
+		</hgroup>
+
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						<div class="icon-wrap icon-link hide" data-idx="2">
+							<div class="loopback_l"></div>
+							<div class="loopback_r"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						<li>友情链接</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="github" target="_blank" href="https://github.com/kareluo" title="github">github</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android/" style="font-size: 20px;">Android</a> <a href="/tags/Espresso/" style="font-size: 10px;">Espresso</a> <a href="/tags/HotFix/" style="font-size: 10px;">HotFix</a> <a href="/tags/JNI/" style="font-size: 10px;">JNI</a> <a href="/tags/Testing/" style="font-size: 10px;">Testing</a> <a href="/tags/android/" style="font-size: 10px;">android</a>
+					</div>
+				</section>
+				
+				
+				
+				<section class="switch-part switch-part3">
+					<div id="js-friends">
+					
+			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://localhost:4000/">奥巴马的博客</a>
+			        
+			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://localhost:4000/">卡卡的美丽传说</a>
+			        
+			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://localhost:4000/">本泽马的博客</a>
+			        
+			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://localhost:4000/">吉格斯的博客</a>
+			        
+			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://localhost:4000/">习大大大不同</a>
+			        
+			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://localhost:4000/">托蒂的博客</a>
+			        
+			        </div>
+				</section>
+				
+
+				
+				
+				<section class="switch-part switch-part4">
+				
+					<div id="js-aboutme">true</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">Felix</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="null" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">Felix</h1>
+			</hgroup>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/kareluo" title="github">github</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-Android-Picture-Preview副本" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/12/27/Android-Picture-Preview副本/" class="article-date">
+  	<time datetime="2015-12-27T14:08:48.000Z" itemprop="datePublished">2015-12-27</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android 原图预览
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li></ul>
+	</div>
+
+        
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Android中的图片加载到内存中后会生成一个Bitmap的对象，这个对象会占用很大的内存空间，对于比较大的图片来说以往都会使用BitmapFactory的一个内部类Options对图片做一下加载前的配置，比如inSampleSize属性，当inSampleSize=2时，图片的宽高都会加载成原来的二分之一，所以加载到内存中所占用的大小便是原来的四分之一，所带来的缺点是图片变得模糊了。所以对于加载过大的图片（如10M+的图片），一般都是采用分块加载的方式。</p>
+<h2 id="u5B9E_u73B0_u7684_u4E3B_u8981_u6B65_u9AA4"><a href="#u5B9E_u73B0_u7684_u4E3B_u8981_u6B65_u9AA4" class="headerlink" title="实现的主要步骤"></a>实现的主要步骤</h2><p>在Android中图片的加载中提供了一个类可以方便地实现图片的分块加载，<code>BitmapRegionDecoder</code>，通过这个类我们可以方便地加载原始图片的模块区域指定精度的bitmap对象，也就是当你将一张大图在手机上只显示左上角的一小块时，我们可以通过计算一个合适的精度和区域，将其对应的图片块加载到内存并显示到屏幕上。<br>首先我们分析下图片加载及显示的流程，我们把耗时的加载过程放到子线程中去完成，UI线程中处理图片的刷新，手势的监听处理等。<br>一个大图片的预览过程：</p>
+<ol>
+<li>图片的加载</li>
+<li>图片的显示</li>
+<li>手势放大</li>
+<li>移动显示</li>
+<li>滚动</li>
+</ol>
+<p>1.图片的加载，第一次加载一般都会显示整张图片，目前定义了两种显示方式<code>FIT_CENTER</code>, <code>FIT_AUTO</code>。这两种一开始都会显示出整张图片，所以开始时我们将图片的整个加载到内存中，当然会更加图片的原始尺寸计算一个合适的SampleSize（一个关于清晰地的值，[1, 2, 4, 8, …)2的幂的数字，越大越模糊，占用的内存越少）。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获取一个合适的inSampleSize</span></span><br><span class="line"><span class="keyword">float</span> widthSize = <span class="number">1f</span> * mImage.mImageWidth / mInfo.mVisibleRect.width();</span><br><span class="line"><span class="keyword">float</span> heightSize = <span class="number">1f</span> * mImage.mImageHeight / mInfo.mVisibleRect.height();</span><br><span class="line"><span class="keyword">int</span> sampleSize = getSampleSize(Math.max(widthSize, heightSize);</span><br><span class="line">Options options = <span class="keyword">new</span> Options();</span><br><span class="line">options.inSampleSize = sampleSize;</span><br><span class="line">mImage.mImageCache = mImage.mImageRegion.decodeRegion(mImage.mImageOriginalRect, options);</span><br></pre></td></tr></table></figure>
+<p>找一个靠近的2的幂的数字</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">getSampleSize</span><span class="params">(<span class="keyword">int</span> size)</span> </span>&#123;</span><br><span class="line">   <span class="keyword">if</span> (size &lt;= <span class="number">1</span>) <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">   <span class="keyword">int</span> sampleSize = <span class="number">1</span>;</span><br><span class="line">   <span class="keyword">while</span> (size &gt; <span class="number">1</span>) &#123;</span><br><span class="line">       size &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">       sampleSize &lt;&lt;= <span class="number">1</span>;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">return</span> sampleSize;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>2.使用一个Rect对象表示着图片的显示区域，然后另一个Rect对象表示着图片的显示区域，坐标是以显示区域的左上角为原点，我们仅仅需要维护这两个Rect对象，并关心两者的交集区域，然后计算这个重合的区域包含哪些“点”，这里的点是表示一个Block，我们会将图片划分为多个Block，这样比较容易处理</p>
+<p>3.手势的放大会有两个需要关心的点，一个是放大的倍数，另一个是放大的中心点（焦点）。如上面说的图片的区域是使用一个Rect对象表示的，那么对一个Rect进行缩放即可，Rect的缩放很简单，但是相对一个焦点缩放就稍微复杂了一些，如下，简单的可以分为三个步骤：1、将Rect移到原点，2、对Rect缩放，3、将Rect移回焦点。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">scale</span><span class="params">(Rect rect, <span class="keyword">float</span> scale, PointF focus)</span> </span>&#123;</span><br><span class="line">   Point offset = <span class="keyword">new</span> Point(rect.left, rect.top);</span><br><span class="line">   rect.offsetTo(<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">   rect.right = Math.round(rect.right * scale);</span><br><span class="line">   rect.bottom = Math.round(rect.bottom * scale);</span><br><span class="line"></span><br><span class="line">   <span class="keyword">float</span> deltaX = (focus.x - offset.x) * scale;</span><br><span class="line">   <span class="keyword">float</span> deltaY = (focus.y - offset.y) * scale;</span><br><span class="line"></span><br><span class="line">   rect.offset(Math.round(focus.x - deltaX), Math.round(focus.y - deltaY));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>4.移动显示比起缩放会简单很多，其仅仅只需要对Rect进行平移即可，使用Rect本身的offset方法就可以完成。</p>
+<p>5.滚动，就是手指离开屏幕是，图片有一个滚动的效果，这个使用了数值动画去完成了，也就是一个图片不断滚动的过程。</p>
+<h2 id="u5206_u5757_u52A0_u8F7D"><a href="#u5206_u5757_u52A0_u8F7D" class="headerlink" title="分块加载"></a>分块加载</h2><p>什么时候需要分块加载？当我们将一张很大的图片（10000*10000）显示到手机屏幕上时，开始将其全部显示，这时肯定是缩小的，比如scale = 0.1，这时的SampleSize可能是8，那么当我们再次缩小这个图片时，内存中已经有了一张完整的图片的Bitmap缓存，清晰度是8，我现在需要一个清晰度是16的完成图片，这时需要重新加载SampleSize=16的图片吗？当然不需要，我只需要直接将之前的缓存缩小即可，所以，当我们需要的清晰度低于缓存的，就不需要重新加载，当我们将图片放大后，显示某一块时，这时比如SampleSize=4，我们仅仅需要算出显示的这块区域，并将这块区域以清晰度为4加载到内存中即可，然后显示到屏幕上。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = blocks.top; i &lt;= blocks.bottom; i++) &#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> j = blocks.left; j &lt;= blocks.right; j++) &#123;</span><br><span class="line">      Point position = <span class="keyword">new</span> Point(j, i);</span><br><span class="line">      <span class="keyword">if</span> (!imageCache.mCaches.containsKey(position)) &#123;</span><br><span class="line">          mHandler.obtainMessage(MSG_IMAGE_BLOCK_LOAD,</span><br><span class="line">                  <span class="keyword">new</span> BlockInfo(position, sampleSize)).sendToTarget();</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          Bitmap bitmap = imageCache.mCaches.get(position);</span><br><span class="line">          drawables.add(<span class="keyword">new</span> ImageDrawable(bitmap, bitmapRect(bitmap),</span><br><span class="line">                  blockRect(j, i, imageBlockSize, imageRect.left, imageRect.top)));</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的过程是遍历显示区域的block，并检查是否已经缓存到内存，如果没有就取加载。</p>
+<h2 id="u4F18_u5316"><a href="#u4F18_u5316" class="headerlink" title="优化"></a>优化</h2><p>分块加载的思想非常简单，就是分块，需要显示那一块图片就去加载，然后显示，当图片缩放后加载时处理下需要的精度即可，但是如果单单只这样做的话，那么图片预览起来会非常卡，以为非常显示的时候都要去重新加载那一块，改进的方式就是在内存中缓存起来，当需要的精度等于或者低于某一缓存块并且尺寸在缓存块范围内，则可以复用此缓存块。</p>
+<p>按照一定的大小将图片分多行多列，根据行列和缩放单位对Bitmap对象进行缓存。</p>
+<h2 id="u603B_u7ED3"><a href="#u603B_u7ED3" class="headerlink" title="总结"></a>总结</h2><p><a href="https://github.com/kareluo/AndroidPicturePreview" target="_blank" rel="external">项目的地址</a></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/01/30/RxJava/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          RxJava
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/12/27/Android-Picture-Preview/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android 原图预览</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Android-Picture-Preview副本" data-title="Android 原图预览" data-url="http://yoursite.com/2015/12/27/Android-Picture-Preview副本/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"true"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 Felix
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>
