@@ -471,84 +471,6 @@
 
 
   
-    <article id="post-Android-Picture-Preview副本" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/12/27/Android-Picture-Preview副本/" class="article-date">
-  	<time datetime="2015-12-27T14:08:48.000Z" itemprop="datePublished">2015-12-27</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/12/27/Android-Picture-Preview副本/">Android 原图预览</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Android中的图片加载到内存中后会生成一个Bitmap的对象，这个对象会占用很大的内存空间，对于比较大的图片来说以往都会使用BitmapFactory的一个内部类Options对图片做一下加载前的配置，比如inSampleSize属性，当inSampleSize=2时，图片的宽高都会加载成原来的二分之一，所以加载到内存中所占用的大小便是原来的四分之一，所带来的缺点是图片变得模糊了。所以对于加载过大的图片（如10M+的图片），一般都是采用分块加载的方式。</p>
-<h2 id="u5B9E_u73B0_u7684_u4E3B_u8981_u6B65_u9AA4"><a href="#u5B9E_u73B0_u7684_u4E3B_u8981_u6B65_u9AA4" class="headerlink" title="实现的主要步骤"></a>实现的主要步骤</h2><p>在Android中图片的加载中提供了一个类可以方便地实现图片的分块加载，<code>BitmapRegionDecoder</code>，通过这个类我们可以方便地加载原始图片的模块区域指定精度的bitmap对象，也就是当你将一张大图在手机上只显示左上角的一小块时，我们可以通过计算一个合适的精度和区域，将其对应的图片块加载到内存并显示到屏幕上。<br>首先我们分析下图片加载及显示的流程，我们把耗时的加载过程放到子线程中去完成，UI线程中处理图片的刷新，手势的监听处理等。<br>一个大图片的预览过程：</p>
-<ol>
-<li>图片的加载</li>
-<li>图片的显示</li>
-<li>手势放大</li>
-<li>移动显示</li>
-<li>滚动</li>
-</ol>
-<p>1.图片的加载，第一次加载一般都会显示整张图片，目前定义了两种显示方式<code>FIT_CENTER</code>, <code>FIT_AUTO</code>。这两种一开始都会显示出整张图片，所以开始时我们将图片的整个加载到内存中，当然会更加图片的原始尺寸计算一个合适的SampleSize（一个关于清晰地的值，[1, 2, 4, 8, …)2的幂的数字，越大越模糊，占用的内存越少）。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获取一个合适的inSampleSize</span></span><br><span class="line"><span class="keyword">float</span> widthSize = <span class="number">1f</span> * mImage.mImageWidth / mInfo.mVisibleRect.width();</span><br><span class="line"><span class="keyword">float</span> heightSize = <span class="number">1f</span> * mImage.mImageHeight / mInfo.mVisibleRect.height();</span><br><span class="line"><span class="keyword">int</span> sampleSize = getSampleSize(Math.max(widthSize, heightSize);</span><br><span class="line">Options options = <span class="keyword">new</span> Options();</span><br><span class="line">options.inSampleSize = sampleSize;</span><br><span class="line">mImage.mImageCache = mImage.mImageRegion.decodeRegion(mImage.mImageOriginalRect, options);</span><br></pre></td></tr></table></figure>
-<p>找一个靠近的2的幂的数字</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">getSampleSize</span><span class="params">(<span class="keyword">int</span> size)</span> </span>&#123;</span><br><span class="line">   <span class="keyword">if</span> (size &lt;= <span class="number">1</span>) <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">   <span class="keyword">int</span> sampleSize = <span class="number">1</span>;</span><br><span class="line">   <span class="keyword">while</span> (size &gt; <span class="number">1</span>) &#123;</span><br><span class="line">       size &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">       sampleSize &lt;&lt;= <span class="number">1</span>;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">return</span> sampleSize;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>2.使用一个Rect对象表示着图片的显示区域，然后另一个Rect对象表示着图片的显示区域，坐标是以显示区域的左上角为原点，我们仅仅需要维护这两个Rect对象，并关心两者的交集区域，然后计算这个重合的区域包含哪些“点”，这里的点是表示一个Block，我们会将图片划分为多个Block，这样比较容易处理</p>
-<p>3.手势的放大会有两个需要关心的点，一个是放大的倍数，另一个是放大的中心点（焦点）。如上面说的图片的区域是使用一个Rect对象表示的，那么对一个Rect进行缩放即可，Rect的缩放很简单，但是相对一个焦点缩放就稍微复杂了一些，如下，简单的可以分为三个步骤：1、将Rect移到原点，2、对Rect缩放，3、将Rect移回焦点。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">scale</span><span class="params">(Rect rect, <span class="keyword">float</span> scale, PointF focus)</span> </span>&#123;</span><br><span class="line">   Point offset = <span class="keyword">new</span> Point(rect.left, rect.top);</span><br><span class="line">   rect.offsetTo(<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">   rect.right = Math.round(rect.right * scale);</span><br><span class="line">   rect.bottom = Math.round(rect.bottom * scale);</span><br><span class="line"></span><br><span class="line">   <span class="keyword">float</span> deltaX = (focus.x - offset.x) * scale;</span><br><span class="line">   <span class="keyword">float</span> deltaY = (focus.y - offset.y) * scale;</span><br><span class="line"></span><br><span class="line">   rect.offset(Math.round(focus.x - deltaX), Math.round(focus.y - deltaY));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>4.移动显示比起缩放会简单很多，其仅仅只需要对Rect进行平移即可，使用Rect本身的offset方法就可以完成。</p>
-<p>5.滚动，就是手指离开屏幕是，图片有一个滚动的效果，这个使用了数值动画去完成了，也就是一个图片不断滚动的过程。</p>
-<h2 id="u5206_u5757_u52A0_u8F7D"><a href="#u5206_u5757_u52A0_u8F7D" class="headerlink" title="分块加载"></a>分块加载</h2><p>什么时候需要分块加载？当我们将一张很大的图片（10000*10000）显示到手机屏幕上时，开始将其全部显示，这时肯定是缩小的，比如scale = 0.1，这时的SampleSize可能是8，那么当我们再次缩小这个图片时，内存中已经有了一张完整的图片的Bitmap缓存，清晰度是8，我现在需要一个清晰度是16的完成图片，这时需要重新加载SampleSize=16的图片吗？当然不需要，我只需要直接将之前的缓存缩小即可，所以，当我们需要的清晰度低于缓存的，就不需要重新加载，当我们将图片放大后，显示某一块时，这时比如SampleSize=4，我们仅仅需要算出显示的这块区域，并将这块区域以清晰度为4加载到内存中即可，然后显示到屏幕上。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = blocks.top; i &lt;= blocks.bottom; i++) &#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> j = blocks.left; j &lt;= blocks.right; j++) &#123;</span><br><span class="line">      Point position = <span class="keyword">new</span> Point(j, i);</span><br><span class="line">      <span class="keyword">if</span> (!imageCache.mCaches.containsKey(position)) &#123;</span><br><span class="line">          mHandler.obtainMessage(MSG_IMAGE_BLOCK_LOAD,</span><br><span class="line">                  <span class="keyword">new</span> BlockInfo(position, sampleSize)).sendToTarget();</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          Bitmap bitmap = imageCache.mCaches.get(position);</span><br><span class="line">          drawables.add(<span class="keyword">new</span> ImageDrawable(bitmap, bitmapRect(bitmap),</span><br><span class="line">                  blockRect(j, i, imageBlockSize, imageRect.left, imageRect.top)));</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>上面的过程是遍历显示区域的block，并检查是否已经缓存到内存，如果没有就取加载。</p>
-<h2 id="u4F18_u5316"><a href="#u4F18_u5316" class="headerlink" title="优化"></a>优化</h2><p>分块加载的思想非常简单，就是分块，需要显示那一块图片就去加载，然后显示，当图片缩放后加载时处理下需要的精度即可，但是如果单单只这样做的话，那么图片预览起来会非常卡，以为非常显示的时候都要去重新加载那一块，改进的方式就是在内存中缓存起来，当需要的精度等于或者低于某一缓存块并且尺寸在缓存块范围内，则可以复用此缓存块。</p>
-<p>按照一定的大小将图片分多行多列，根据行列和缩放单位对Bitmap对象进行缓存。</p>
-<h2 id="u603B_u7ED3"><a href="#u603B_u7ED3" class="headerlink" title="总结"></a>总结</h2><p><a href="https://github.com/kareluo/AndroidPicturePreview" target="_blank" rel="external">项目的地址</a></p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li></ul>
-	</div>
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
     <article id="post-Android-Picture-Preview" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -580,7 +502,7 @@
 <p>项目地址：<a href="https://github.com/kareluo/AndroidPicturePreview" target="_blank" rel="external">https://github.com/kareluo/AndroidPicturePreview</a></p>
 </blockquote>
 <h2 id="u76F8_u5173_u6280_u672F_u6982_u8FF0"><a href="#u76F8_u5173_u6280_u672F_u6982_u8FF0" class="headerlink" title="相关技术概述"></a>相关技术概述</h2><ul>
-<li><p>####图片分块加载<br>  图片的分块加载在地图绘制的情况上最为明显，当想获取一张尺寸很大的图片的某一小块区域时，就用到了图片的分块加载，在Android中<code>BitmapRegionDecoder</code>类的功能就是加载一张图片的指定区域。<code>BitmapRegionDecoder</code>类的使用非常简单，API很少并且一目了然，如下：</p>
+<li><p>###图片分块加载<br>  图片的分块加载在地图绘制的情况上最为明显，当想获取一张尺寸很大的图片的某一小块区域时，就用到了图片的分块加载，在Android中<code>BitmapRegionDecoder</code>类的功能就是加载一张图片的指定区域。<code>BitmapRegionDecoder</code>类的使用非常简单，API很少并且一目了然，如下：</p>
   <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建实例</span></span><br><span class="line">mDecoder = BitmapRegionDecoder.newInstance(mFile.getAbsolutePath(), <span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取原图片宽高</span></span><br><span class="line">  mDecoder.getWidth();</span><br><span class="line">  mDecoder.getHeight();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 加载(10, 10) - (80, 80) 区域内原始精度的Bitmap对象</span></span><br><span class="line">  Rect rect = <span class="keyword">new</span> Rect(<span class="number">10</span>, <span class="number">10</span>, <span class="number">80</span>, <span class="number">80</span>);</span><br><span class="line">  BitmapFactory.Options options = <span class="keyword">new</span> BitmapFactory.Options();</span><br><span class="line">  options.inSampleSize = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">  Bitmap bitmap = mDecoder.decodeRegion(rect, options);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 回收释放Native层内存</span></span><br><span class="line">  mDecoder.recycle();</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
@@ -592,25 +514,25 @@
 <pre><code>`entryRemoved()`也是一个比较重要的方法，用于回收某个对象时调用，这样当回收Bitmap对象时可以调用Bitmap对象的`recycle()`方法主动释放Bitmap对象的内存。
 `create()`方法是当`get()`获取不到对象时调用，默认实现返回`null`，根据需要可重写其。
 </code></pre><ul>
-<li><p>####手势处理<br>  主要用到两个手势处理类，分别是<code>ScaleGestureDetector</code>和<code>GestureDetector</code>，前者用于处理缩放手势，后者用于处理其余手势，如移动，快速滑动，点击，双击，长按等。<br>  <code>ScaleGestureDetector</code>专门处理缩放手势，其比较重要的方法是<code>onScale(ScaleGestureDetector detector)</code>，当缩放时会不停地回调这个方法，需要注意的一点是<code>detector.getScaleFactor()</code>获取到的缩放比例是相对上一次的，不如放大时一般这个值会是<code>1.1, 1.2, 1.1, ....</code>。</p>
+<li><p>###手势处理<br>  主要用到两个手势处理类，分别是<code>ScaleGestureDetector</code>和<code>GestureDetector</code>，前者用于处理缩放手势，后者用于处理其余手势，如移动，快速滑动，点击，双击，长按等。<br>  <code>ScaleGestureDetector</code>专门处理缩放手势，其比较重要的方法是<code>onScale(ScaleGestureDetector detector)</code>，当缩放时会不停地回调这个方法，需要注意的一点是<code>detector.getScaleFactor()</code>获取到的缩放比例是相对上一次的，不如放大时一般这个值会是<code>1.1, 1.2, 1.1, ....</code>。</p>
   <figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="at_rule">@<span class="keyword">Override</span></span><br><span class="line">public boolean <span class="function">onScale</span>(ScaleGestureDetector detector) </span>&#123;</span><br><span class="line">    <span class="tag">mIntensifyView</span><span class="class">.addScale</span>(<span class="tag">detector</span><span class="class">.getScaleFactor</span>(),</span><br><span class="line">            <span class="tag">detector</span><span class="class">.getFocusX</span>(), <span class="tag">detector</span><span class="class">.getFocusY</span>());</span><br><span class="line">    <span class="tag">return</span> <span class="tag">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
 <h2 id="u52A0_u8F7D_u6D41_u7A0B"><a href="#u52A0_u8F7D_u6D41_u7A0B" class="headerlink" title="加载流程"></a>加载流程</h2><p><img src="intensify-image-preview.png" alt="图片状态流程图"></p>
 <ul>
-<li><p>#####NONE（无状态）<br>  初始的状态，这个时候的View还没有设置图片资源，NONE状态不会<strong>自动</strong>转变到其他状态，只有外界设置了图片资源后才会进行下面的状态的转移。</p>
+<li><p>####NONE（无状态）<br>  初始的状态，这个时候的View还没有设置图片资源，NONE状态不会<strong>自动</strong>转变到其他状态，只有外界设置了图片资源后才会进行下面的状态的转移。</p>
 </li>
-<li><p>#####SRC（锁定资源）<br>  当外界设置了图片资源后，View便具有了图片源，这是就到了SRC状态。</p>
+<li><p>####SRC（锁定资源）<br>  当外界设置了图片资源后，View便具有了图片源，这是就到了SRC状态。</p>
 </li>
-<li><p>#####LOAD（加载宽高）<br>  到达LOAD状态前，需要加载图片的真实宽高，真实宽高加载完成后就到了LOAD状态，LOAD状态还没有真正加载图片，这是有必要的，如界面不可见，图片不可见时是不需要加载图片的，这里是有待优化的地方。</p>
+<li><p>####LOAD（加载宽高）<br>  到达LOAD状态前，需要加载图片的真实宽高，真实宽高加载完成后就到了LOAD状态，LOAD状态还没有真正加载图片，这是有必要的，如界面不可见，图片不可见时是不需要加载图片的，这里是有待优化的地方。</p>
 </li>
-<li><p>#####INIT（初始化整图）<br>  INIT状态会去根据View的显示区域加载一张完整的图片，精度会根据图片和显示区域的尺寸比例计算出一个比较合适的值，如果图片很大，精度就会比较低，如果图片比较小，精度就很高，这张图片是作为底图使用。</p>
+<li><p>####INIT（初始化整图）<br>  INIT状态会去根据View的显示区域加载一张完整的图片，精度会根据图片和显示区域的尺寸比例计算出一个比较合适的值，如果图片很大，精度就会比较低，如果图片比较小，精度就很高，这张图片是作为底图使用。</p>
 </li>
-<li><p>#####FREE（ScaleType完成）<br>  图片显示都会有一个ScaleType，目前只有两种，FIT_CENTER，FIT_AUTO，前者和ImageView的一样，后者的显示方式可以参考微博图片，微信图片的显示方式，对于长图会比较明显，只有这一步做完了才能真正的去显示图片，也就是FREE状态才是用于显示图片的。图片的缩放，移动，快速移动等操作都是在这个状态上做的。</p>
+<li><p>####FREE（ScaleType完成）<br>  图片显示都会有一个ScaleType，目前只有两种，FIT_CENTER，FIT_AUTO，前者和ImageView的一样，后者的显示方式可以参考微博图片，微信图片的显示方式，对于长图会比较明显，只有这一步做完了才能真正的去显示图片，也就是FREE状态才是用于显示图片的。图片的缩放，移动，快速移动等操作都是在这个状态上做的。</p>
 </li>
 </ul>
 <h2 id="u5185_u5B58_u7F13_u5B58"><a href="#u5185_u5B58_u7F13_u5B58" class="headerlink" title="内存缓存"></a>内存缓存</h2><ul>
-<li><p>####LruCache增强<br>  Android中的LruCache的使用和前面介绍的完全一致，这里使用的时候做了一些处理，实现了一个新的LruCache名为IntensifyCache，比如实现了<code>create()</code>，在获取Bitmap时，如果不存在就加载等，并且添加了两个方法，一个是<code>justGet()</code>用于仅仅获取，不会自动触发<code>create()</code>方法，前面说过<code>get()</code>方法在获取不到时会触发<code>create()</code>方法去创建。另一个方法是<code>alternative()</code>用于提供备选方法，就是在<code>get()</code>获取不到时先不创建，而是先去查找已有的其他缓存是否有可代替的，如果可以找到，那么就返回这个，否则继续走<code>create()</code>方案，这里的设计是针对Bitmap缓存做的，不一定适合其他的缓存。<br>  上面介绍了两个增加的方法的大概功能，现在介绍下IntensifyImageCache是如何缓存Bitmap的，首先IntensifyImageCache类有个内部类ImageCache是根据Point缓存Bitmap的缓存类，这个类也是继承IntensifyCache的。此类的两个比较重要的方法实现如下：</p>
+<li><p>###LruCache增强<br>  Android中的LruCache的使用和前面介绍的完全一致，这里使用的时候做了一些处理，实现了一个新的LruCache名为IntensifyCache，比如实现了<code>create()</code>，在获取Bitmap时，如果不存在就加载等，并且添加了两个方法，一个是<code>justGet()</code>用于仅仅获取，不会自动触发<code>create()</code>方法，前面说过<code>get()</code>方法在获取不到时会触发<code>create()</code>方法去创建。另一个方法是<code>alternative()</code>用于提供备选方法，就是在<code>get()</code>获取不到时先不创建，而是先去查找已有的其他缓存是否有可代替的，如果可以找到，那么就返回这个，否则继续走<code>create()</code>方案，这里的设计是针对Bitmap缓存做的，不一定适合其他的缓存。<br>  上面介绍了两个增加的方法的大概功能，现在介绍下IntensifyImageCache是如何缓存Bitmap的，首先IntensifyImageCache类有个内部类ImageCache是根据Point缓存Bitmap的缓存类，这个类也是继承IntensifyCache的。此类的两个比较重要的方法实现如下：</p>
   <figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line"><span class="keyword">protected</span> Bitmap create(Point key) &#123;</span><br><span class="line">      BitmapFactory.<span class="keyword">Options</span> <span class="keyword">options</span> = <span class="keyword">new</span> BitmapFactory.<span class="keyword">Options</span>();</span><br><span class="line">      <span class="keyword">options</span>.inSampleSize = level;</span><br><span class="line">      Rect rect = blockRect(key.x, key.y, BLOCK_SIZE);</span><br><span class="line">      <span class="keyword">if</span> (rect.<span class="keyword">intersect</span>(mOriginalRect)) &#123;</span><br><span class="line">         <span class="keyword">return</span> mRegionDecoder.decodeRegion(rect, <span class="keyword">options</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>  <code>create</code>方法，此方法是指定的点获取对应的Bitmap对象，这里所说的点并不是像素点，而是将图片按照某个尺寸划分出来的方格的坐标，后面会有详细点的说明。这里其实不难明白，其实就是加载指定坐标对应的Bitmap对象，level就是精度。只用与图片原始区域有交集时才会加载并返回对应的Bitmap对象。</p>
 <p>  另外一个方法是<code>alternative</code>，此方法是提供备选，当获取某精度下的某坐标的Bitmap对象时发现没有，这时会优先去寻找更高精度的对应位置的缓存，一旦发现会直接返回并使用其。代码如下：</p>
