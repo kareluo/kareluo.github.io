@@ -1,12 +1,12 @@
-import JsonElement from './json-element';
+import JsonElement, { JsonElementProps } from './json-element';
 import { jsonType, JsonTypes, JsonType } from './json';
 import JsonElements, { JsonElementsProps } from './json-elements';
 import JsonArray from './json-array';
 
 export interface JsonObjectProps<T extends object>
-  extends JsonElementsProps<T> {}
+  extends JsonElementProps<T> {}
 
-export default class JsonObject<T extends object> extends JsonElements<T> {
+export default class JsonObject<T extends object> extends JsonElement<T> {
   public children: Array<JsonElement<JsonType>> = [];
 
   constructor(props: JsonObjectProps<T>) {

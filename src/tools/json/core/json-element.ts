@@ -13,9 +13,27 @@ export default class JsonElement<T extends JsonType = JsonType> {
 
   public type: JsonTypes;
 
+  public children: Array<JsonElement<JsonType>> = [];
+
   constructor(props: JsonElementProps<T>) {
     this.key = props.key;
     this.value = props.value;
     this.type = props.type || jsonType(this.value);
+  }
+
+  get size(): number {
+    return this.children.length;
+  }
+
+  get isEmpty(): boolean {
+    return this.size === 0;
+  }
+
+  get isArray(): boolean {
+    return this.type === JsonTypes.array;
+  }
+
+  get isObject(): boolean {
+    return this.type === JsonTypes.object;
   }
 }

@@ -3,9 +3,9 @@ import { JsonType, jsonType, JsonTypes } from './json';
 import JsonElements, { JsonElementsProps } from './json-elements';
 import JsonObject from './json-object';
 
-export interface JsonArrayProps extends JsonElementsProps<Array<JsonType>> {}
+export interface JsonArrayProps extends JsonElementProps<Array<JsonType>> {}
 
-export default class JsonArray extends JsonElements<Array<JsonType>> {
+export default class JsonArray extends JsonElement<Array<JsonType>> {
   constructor(props: JsonArrayProps) {
     super(props);
     if (this.value) {
