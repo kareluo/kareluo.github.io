@@ -26,14 +26,14 @@ export const jsonType = (value: JsonType): JsonTypes => {
   if (type === JsonTypes.boolean) {
     return JsonTypes.boolean;
   }
+  if (Array.isArray(value)) {
+    return JsonTypes.array;
+  }
   if (type === JsonTypes.object) {
     if (value === null) {
       return JsonTypes.null;
     }
     return JsonTypes.object;
-  }
-  if (Array.isArray(value)) {
-    return JsonTypes.array;
   }
   throw new Error(`未知类型错误：${value}`);
 };

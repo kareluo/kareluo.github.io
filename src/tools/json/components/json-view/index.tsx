@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import './index.scss';
 import JsonNode from '../json-node';
 import JsonElements from '../../core/json-elements';
@@ -10,21 +10,17 @@ type Props = {
 };
 
 export default function JsonView(props: Props) {
-  const [value, setValue] = useState<JsonElement>(
-    new JsonObject({
-      value: { aaa: '', bb: 'asda', cc: ['asda', { asd: 'asda' }] },
-    }),
+  // const json = new JsonObject({
+  //   value: { aaa: '', bb: 'asda', cc: ['asda', { asd: 'asda' }] },
+  //   tier: 0,
+  // });
+  const json = new JsonObject({
+    value: { aaa: '', bb: 'asda', cc: ['asda', { asd: 'asda' }] },
+    tier: 0,
+  });
+  return (
+    <div>
+      <Fragment>{json.render()}</Fragment>
+    </div>
   );
-  console.log(value);
-  // useEffect(() => {
-  //   if (props.json) {
-  //     const v = JSON.parse(props.json);
-  //     setValue(new JsonElements({ value: v }));
-  //   } else {
-  //     setValue(new JsonElements({ value: null }));
-  //   }
-  // }, [props]);
-
-  console.log('element', value);
-  return <div>{value && <JsonNode element={value} />}</div>;
 }
