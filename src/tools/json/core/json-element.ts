@@ -1,4 +1,4 @@
-import React from 'react';
+import JsonRender from './json-render';
 import { JsonType, JsonTypes, jsonType } from './json';
 
 export interface JsonElementProps<T extends JsonType = JsonType> {
@@ -42,73 +42,22 @@ export default class JsonElement<T extends JsonType = JsonType> {
     return this.type === JsonTypes.object;
   }
 
-  protected renderKey() {
-    const children: any[] = [' '.repeat(this.deepth * 2)];
-    if (this.key) {
-      children.push(
-        React.createElement(
-          'span',
-          { style: { color: '#92278f' } },
-          '"',
-          this.key,
-          '"',
-        ),
-        ': ',
-      );
-    }
-    return children;
-  }
-
-  public render(): React.DOMElement<any, any>[] {
-    const children: any[] = this.renderKey();
+  public render(): JsonRender {
+    const render = JsonRender.create().space(this.deepth).key(this.key);
     switch (this.type) {
       case JsonTypes.string:
-        children.push(
-          React.createElement(
-            'span',
-            {
-              style: { color: '#3ab54a' },
-            },
-            '"',
-            this.value,
-            '"',
-          ),
-        );
+        render.string(this.value as any);
         break;
       case JsonTypes.number:
-        children.push(
-          React.createElement(
-            'span',
-            {
-              style: { color: '#25aae2' },
-            },
-            this.value,
-          ),
-        );
+        render.number(this.value as any);
         break;
       case JsonTypes.boolean:
-        children.push(
-          React.createElement(
-            'span',
-            {
-              style: { color: '#f98280' },
-            },
-            `${this.value}`,
-          ),
-        );
+        render.boolean(this.value as any);
         break;
       case JsonTypes.null:
-        children.push(
-          React.createElement(
-            'span',
-            {
-              style: { color: '#f1592a' },
-            },
-            `${this.value}`,
-          ),
-        );
+        render.null(this.value as any);
         break;
     }
-    return children;
+    return render;
   }
 }

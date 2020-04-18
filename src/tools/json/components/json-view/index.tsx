@@ -1,9 +1,6 @@
-import React, { useState, useEffect, Fragment } from 'react';
-import './index.scss';
-import JsonNode from '../json-node';
-import JsonElements from '../../core/json-elements';
-import JsonElement from '../../core/json-element';
+import React, { Fragment } from 'react';
 import JsonObject from '../../core/json-object';
+import './index.scss';
 
 type Props = {
   json?: string;
@@ -15,6 +12,7 @@ export default function JsonView(props: Props) {
   //   tier: 0,
   // });
   const json = new JsonObject({
+    key: 'aaax',
     value: {
       aaa: '',
       bb: 'asda',
@@ -34,7 +32,7 @@ export default function JsonView(props: Props) {
   return (
     <div className="json-view">
       <Fragment>
-        <span>{json.render()}</span>
+        <span>{json.render().render()}</span>
       </Fragment>
     </div>
   );

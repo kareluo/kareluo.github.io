@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import './index.scss';
+import React from 'react';
 import JsonElement from '../../core/json-element';
-import { JsonTypes } from '../../core/json';
+import './index.scss';
 
 type Props = {
   element: JsonElement;

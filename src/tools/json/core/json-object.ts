@@ -1,7 +1,6 @@
-import React from 'react';
+import JsonRender from './json-render';
 import JsonElement, { JsonElementProps } from './json-element';
 import { jsonType, JsonTypes, JsonType } from './json';
-import JsonElements, { JsonElementsProps } from './json-elements';
 import JsonArray from './json-array';
 
 export interface JsonObjectProps<T extends object>
@@ -28,18 +27,21 @@ export default class JsonObject<T extends object> extends JsonElement<T> {
     }
   }
 
-  public render(): React.DOMElement<any, any>[] {
-    const children: any[] = this.renderKey();
-    children.push('{', React.createElement('br'));
+  public render(): JsonRender {
+    const render = JsonRender.create()
+      .space(this.deepth)
+      .key(this.key)
+      .append('{')
+      .br();
     if (!this.isEmpty) {
       this.children.forEach((child, index) => {
         if (index > 0) {
-          children.push(',', React.createElement('br'));
+          render.append(',').br();
         }
-        children.push(...child.render());
+        console.log('render', child.render());
+        render.sub(child.render());
       });
     }
-    children.push(React.createElement('br'), ` `.repeat(this.deepth * 2), '}');
-    return children;
+    return render.br().space(this.deepth).append('}');
   }
 }
