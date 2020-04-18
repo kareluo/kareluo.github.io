@@ -36,7 +36,10 @@ export default class JsonRender {
     this.es.push(
       React.createElement(
         'span',
-        { key: JsonRender.uid++, style: { color: '#3ab54a' } },
+        {
+          key: JsonRender.uid++,
+          style: { color: '#3ab54a', whiteSpace: 'pre-wrap' },
+        },
         `"${value}"`,
       ),
     );
