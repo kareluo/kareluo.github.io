@@ -21,7 +21,6 @@ export default class JsonObject<T extends object> extends JsonElement<T> {
         if (type === JsonTypes.object) {
           return new JsonObject({ key, value, type, deepth: this.deepth + 1 });
         }
-        console.log('create', key, value);
         return new JsonElement({ key, value, type, deepth: this.deepth + 1 });
       });
     }
@@ -38,7 +37,6 @@ export default class JsonObject<T extends object> extends JsonElement<T> {
         if (index > 0) {
           render.append(',').br();
         }
-        console.log('render', child.render());
         render.sub(child.render());
       });
     }

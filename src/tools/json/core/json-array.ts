@@ -41,7 +41,6 @@ export default class JsonArray extends JsonElement<Array<JsonType>> {
         if (index > 0) {
           render.append(',').br();
         }
-        console.log('child');
         render.sub(child.render());
       });
     }

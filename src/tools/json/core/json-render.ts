@@ -77,7 +77,6 @@ export default class JsonRender {
   }
 
   public elements(elements: any[]): JsonRender {
-    console.log(elements);
     this.es = this.es.concat(elements);
     return this;
   }

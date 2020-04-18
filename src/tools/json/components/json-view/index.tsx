@@ -12,21 +12,7 @@ export default function JsonView(props: Props) {
   //   tier: 0,
   // });
   const json = new JsonObject({
-    key: 'aaax',
-    value: {
-      aaa: '',
-      bb: 'asda',
-      cc: [
-        'asdsa',
-        {
-          asd: 'asda',
-          aa: ['asd', 'asda', { asd: 'asdasd' }],
-        },
-      ],
-      x: null,
-      asd: 123,
-      aa: true,
-    },
+    value: {},
     deepth: 0,
   });
   return (
