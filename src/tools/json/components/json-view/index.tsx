@@ -15,12 +15,27 @@ export default function JsonView(props: Props) {
   //   tier: 0,
   // });
   const json = new JsonObject({
-    value: { aaa: '', bb: 'asda', cc: ['asda', { asd: 'asda' }] },
-    tier: 0,
+    value: {
+      aaa: '',
+      bb: 'asda',
+      cc: [
+        'asdsa',
+        {
+          asd: 'asda',
+          aa: ['asd', 'asda', { asd: 'asdasd' }],
+        },
+      ],
+      x: null,
+      asd: 123,
+      aa: true,
+    },
+    deepth: 0,
   });
   return (
-    <div>
-      <Fragment>{json.render()}</Fragment>
+    <div className="json-view">
+      <Fragment>
+        <span>{json.render()}</span>
+      </Fragment>
     </div>
   );
 }

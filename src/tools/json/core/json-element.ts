@@ -1,12 +1,11 @@
 import React from 'react';
 import { JsonType, JsonTypes, jsonType } from './json';
-import Element from './element';
 
 export interface JsonElementProps<T extends JsonType = JsonType> {
   key?: string;
   value: T;
   type?: JsonTypes;
-  tier: number;
+  deepth: number;
 }
 
 export default class JsonElement<T extends JsonType = JsonType> {
@@ -14,7 +13,7 @@ export default class JsonElement<T extends JsonType = JsonType> {
 
   public value?: T;
 
-  public tier: number;
+  public deepth: number;
 
   public type: JsonTypes;
 
@@ -24,8 +23,7 @@ export default class JsonElement<T extends JsonType = JsonType> {
     this.key = props.key;
     this.value = props.value;
     this.type = props.type || jsonType(this.value);
-    this.tier = props.tier;
-    console.log('props', props);
+    this.deepth = props.deepth;
   }
 
   get size(): number {
@@ -44,21 +42,73 @@ export default class JsonElement<T extends JsonType = JsonType> {
     return this.type === JsonTypes.object;
   }
 
-  public render(): React.DOMElement<any, any> {
-    // switch (this.type) {
-    //   case JsonTypes.string:
-    //     return React.createElement('span', { style: {} }, this.value);
-    //   case JsonTypes.number:
-    //     return React.createElement('span', { style: {} }, this.value);
-    //   case JsonTypes.boolean:
-    //     return React.createElement('span', { style: {} }, this.value);
-    // }
-
-    const children: any[] = [' '.repeat(2)];
+  protected renderKey() {
+    const children: any[] = [' '.repeat(this.deepth * 2)];
     if (this.key) {
-      children.push(this.key, ': ');
+      children.push(
+        React.createElement(
+          'span',
+          { style: { color: '#92278f' } },
+          '"',
+          this.key,
+          '"',
+        ),
+        ': ',
+      );
     }
-    children.push(this.value);
-    return React.createElement('pre', {}, children);
+    return children;
+  }
+
+  public render(): React.DOMElement<any, any>[] {
+    const children: any[] = this.renderKey();
+    switch (this.type) {
+      case JsonTypes.string:
+        children.push(
+          React.createElement(
+            'span',
+            {
+              style: { color: '#3ab54a' },
+            },
+            '"',
+            this.value,
+            '"',
+          ),
+        );
+        break;
+      case JsonTypes.number:
+        children.push(
+          React.createElement(
+            'span',
+            {
+              style: { color: '#25aae2' },
+            },
+            this.value,
+          ),
+        );
+        break;
+      case JsonTypes.boolean:
+        children.push(
+          React.createElement(
+            'span',
+            {
+              style: { color: '#f98280' },
+            },
+            `${this.value}`,
+          ),
+        );
+        break;
+      case JsonTypes.null:
+        children.push(
+          React.createElement(
+            'span',
+            {
+              style: { color: '#f1592a' },
+            },
+            `${this.value}`,
+          ),
+        );
+        break;
+    }
+    return children;
   }
 }

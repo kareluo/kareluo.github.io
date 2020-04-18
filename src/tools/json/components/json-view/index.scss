@@ -1,4 +1,10 @@
-pre {
-  display: inline-block;
-  margin: 0;
+@import '../../core/json.scss';
+
+.json-view {
+}
+
+span {
+  white-space: pre;
+  font-weight: bold;
+  font-family: Menlo, Monaco, 'Courier New', monospace;
 }
