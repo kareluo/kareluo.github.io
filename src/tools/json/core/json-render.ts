@@ -19,7 +19,7 @@ export default class JsonRender {
   }
 
   public key(key?: string): JsonRender {
-    if (key) {
+    if (key != null) {
       this.es.push(
         React.createElement(
           'span',

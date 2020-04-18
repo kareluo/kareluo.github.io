@@ -5,7 +5,7 @@ export interface JsonElementProps<T extends JsonType = JsonType> {
   key?: string;
   value: T;
   type?: JsonTypes;
-  deepth: number;
+  deepth?: number;
 }
 
 export default class JsonElement<T extends JsonType = JsonType> {
@@ -23,7 +23,7 @@ export default class JsonElement<T extends JsonType = JsonType> {
     this.key = props.key;
     this.value = props.value;
     this.type = props.type || jsonType(this.value);
-    this.deepth = props.deepth;
+    this.deepth = props.deepth || 0;
   }
 
   get size(): number {

@@ -1,7 +1,6 @@
 import JsonRender from './json-render';
 import JsonElement, { JsonElementProps } from './json-element';
-import { JsonType, jsonType, JsonTypes } from './json';
-import JsonObject from './json-object';
+import { JsonType, toJsonElement } from './json';
 
 export interface JsonArrayProps extends JsonElementProps<Array<JsonType>> {}
 
@@ -9,24 +8,9 @@ export default class JsonArray extends JsonElement<Array<JsonType>> {
   constructor(props: JsonArrayProps) {
     super(props);
     if (this.value) {
-      this.children = this.value.map((v) => {
-        const type = jsonType(v);
-        if (type === JsonTypes.array) {
-          return new JsonArray({
-            value: v as any,
-            type,
-            deepth: this.deepth + 1,
-          });
-        }
-        if (type === JsonTypes.object) {
-          return new JsonObject({
-            value: v as any,
-            type,
-            deepth: this.deepth + 1,
-          });
-        }
-        return new JsonElement({ value: v, type, deepth: this.deepth + 1 });
-      });
+      this.children = this.value.map((value) =>
+        toJsonElement(value, undefined, this.deepth + 1),
+      );
     }
   }
 

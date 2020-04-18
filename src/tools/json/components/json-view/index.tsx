@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import JsonObject from '../../core/json-object';
+import { renderJson } from '../../core/json';
 import './index.scss';
 
 type Props = {
@@ -10,10 +10,7 @@ export default function JsonView(props: Props) {
   const [value, setValue] = useState<any>();
 
   useEffect(() => {
-    if (props.json) {
-      const v = JSON.parse(props.json);
-      setValue(new JsonObject({ value: v, deepth: 0 }).render());
-    }
+    setValue(renderJson(props.json));
   }, [props.json]);
 
   return (
