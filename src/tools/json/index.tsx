@@ -26,7 +26,7 @@ export default function JsonToolPage() {
           <JsonView json={json} />
         </div>
       </div>
-      <footer className="page-footer">aaa</footer>
+      {/* <footer className="page-footer">aaa</footer> */}
     </div>
   );
 }
