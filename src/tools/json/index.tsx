@@ -6,22 +6,27 @@ export default function JsonToolPage() {
   const [json, setJson] = useState('');
 
   const onInput = (e: any) => {
-    console.log(e.target.value);
     setJson(e.target.value);
   };
 
   return (
-    <div className="json">
-      <div className="json-source">
-        <textarea
-          className="json-source__text"
-          placeholder="请输入 JSON 字符串"
-          onChange={onInput}
-        />
+    <div className="page">
+      <header className="page-header">
+        <span>Felix</span>
+      </header>
+      <div className="page-json">
+        <div className="page-json-source">
+          <textarea
+            className="page-json-source__text"
+            placeholder="请输入 JSON 字符串"
+            onChange={onInput}
+          />
+        </div>
+        <div className="page-json-render">
+          <JsonView json={json} />
+        </div>
       </div>
-      <div className="json-render">
-        <JsonView json={json} />
-      </div>
+      <footer className="page-footer">aaa</footer>
     </div>
   );
 }
