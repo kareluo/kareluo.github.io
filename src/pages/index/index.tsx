@@ -21,7 +21,7 @@ export default function () {
         description="Picture Preview Lib，用于显示原图级别的图片预览库，大图显示，大图预览，大图加载，类似微博长图，宽图，可用于显示大分辨率图片等。"
       />
       <Card title="Json" target="/json" description="在线解析 Json 对象工具" />
-      <Card title="About" description="Felix 大前端，minxtth@gmail.com" />
+      <Card title="About" description="Felix Front-end developer，minxtth@gmail.com" />
     </div>
   );
 }
